@@ -1,22 +1,40 @@
 import { Component, inject } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent, InfiniteScrollCustomEvent } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, InfiniteScrollCustomEvent, IonList, IonItem, IonSkeletonText,IonAvatar, IonAlert, IonLabel, IonBadge, IonInfiniteScroll, IonInfiniteScrollContent } from '@ionic/angular/standalone';
 import { FilmesService } from '../services/filmes.service';
 import { catchError, finalize } from 'rxjs';
 import { MovieResult } from '../services/interface';
+import { DatePipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonList,
+    IonItem,
+    IonSkeletonText,IonAvatar,
+    IonAlert,
+    IonLabel,
+    DatePipe,
+    RouterModule,
+    IonBadge,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent
+  ],
 })
 export class HomePage {
   private filmeService = inject(FilmesService);
   private paginaAtual = 1;
-  private error = null;
-  private isLoading = false;
-  private filmes: MovieResult[] = [];
+  public error = null;
+  public isLoading = false;
+  public filmes: MovieResult[] = [];
+  public dummyArray = new Array(5);
   public imageBaseURL = 'http://image.tmdb.org/t/p'
 
   constructor() {
@@ -42,7 +60,7 @@ export class HomePage {
 
         this.error = err.error.status_message;
         return []
-      })
+      }),
     ).subscribe({
       next: (res) => {
         console.log(res);
@@ -56,6 +74,7 @@ export class HomePage {
   }
 
   carregarMais(event: InfiniteScrollCustomEvent) {
-
+    this.paginaAtual++;
+    this.carregarFilmes(event);
   }
 }

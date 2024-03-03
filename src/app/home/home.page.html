@@ -1,20 +1,48 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Filmes mais assistidos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  @if(isLoading){
+    <ion-list>
+      @for (i of dummyArray; track i ) {
+      <ion-item lines="none" class="ion-padding-bottom">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated style="height: 40;"></ion-skeleton-text>
+        </ion-avatar>
+      </ion-item>
+      }
+    </ion-list>
+  } @else if (error) {
+    <ion-alert header="Error" [message]="error" isOpen="true" buttons="['Ok']"></ion-alert>
+  }
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-list>
+    @for (item of filmes; track item.id ) {
+    <ion-item button [routerLink]="['/detalhes', item.id]">
+      <ion-avatar slot="start">
+        <img [src]="imageBaseURL + '/w92' + item.poster_path" alt="poster  ">
+      </ion-avatar>
+
+      <ion-label class="ion-text-wrap">
+        <h3>{{item.title}}</h3>
+        <p>{{item.release_date | date:'y  '}}</p>
+      </ion-label>
+
+      <ion-badge slot="end">{{item.vote_average}}</ion-badge>
+    </ion-item>
+    } @empty {
+      @if (!isLoading) {
+        <ion-item lines="none">
+          <ion-label class="ion-text-centere">Nenhum filme encontrado</ion-label>
+        </ion-item>
+      }
+    }
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="carregarMais($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Carregando mais filmes..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
 </ion-content>
