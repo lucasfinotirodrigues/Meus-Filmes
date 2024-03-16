@@ -1,13 +1,43 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>detalhes</ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ filme()?.title }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">detalhes</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+<ion-content>
+  @if (filme(); as filme) {
+  <ion-card>
+    <div
+      [style.height.px]="420"
+      [style.background-size]="'cover'"
+      [style.background-image]="'url(' + imageBaseURL + '/w400' + filme?.poster_path + ')'"></div>
+
+    <ion-card-header>
+      <ion-card-title> {{ filme?.title }} </ion-card-title>
+      <ion-card-subtitle> {{ filme.tagline }} </ion-card-subtitle>
+      <ion-text color="tertiary">
+        @for (g of filme.genres; track g.id; let isLast = $last;) {
+        <span> {{ g.name }} {{ !isLast ? '·' : '' }}</span>
+        }
+      </ion-text>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-label color="medium">{{ filme.overview }}</ion-label>
+
+      <ion-item lines="none">
+        <ion-icon name="calendar-outline" slot="start"></ion-icon>
+        <ion-label>Release date: {{ filme.release_date | date: 'y'}}</ion-label>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-icon name="cash-outline" slot="start"></ion-icon>
+        <ion-label>Budget: {{ filme.budget| currency: 'USD' }}</ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  }
 </ion-content>
